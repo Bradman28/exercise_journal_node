@@ -1,0 +1,19 @@
+{
+  "name": "exercise_journal_node",
+  "version": "1.0.0",
+  "description": "This application is used to track daily exercises User can input each exercise done on a specific date, and it will log in the journal page",
+  "main": "exercise_journal_server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Brad Surinak",
+  "license": "ISC",
+  "dependencies": {
+    "compass": "^0.1.1",
+    "ejs": "^3.1.9",
+    "express": "^4.19.2",
+    "mongodb": "^6.5.0",
+    "mongoose": "^8.2.4"
+  }
+}
