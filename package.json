@@ -4,6 +4,7 @@
   "description": "This application is used to track daily exercises User can input each exercise done on a specific date, and it will log in the journal page",
   "main": "exercise_journal_server.js",
   "scripts": {
+    "start": "nodemon exercise_journal_server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -15,5 +16,8 @@
     "express": "^4.19.2",
     "mongodb": "^6.5.0",
     "mongoose": "^8.2.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }
