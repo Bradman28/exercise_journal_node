@@ -19,15 +19,20 @@
         <h5>Please enter your exercises for today:</h5>
         <br>
 
-        <form id="new_ex">
-            <input type="date" id="date" onclick="chooseDate()" onkeydown="return event.key != 'Enter';">
-            <input type="text" id="exercise" placeholder="Exercise/Cardio" onkeydown="return event.key != 'Enter';">
-            <input type="text" id="weight" placeholder="Weight/Time" onkeydown="return event.key != 'Enter';">
-            <input type="text" id="sets" placeholder="Sets" onkeydown="return event.key != 'Enter';">
-            <input type="text" id="reps" placeholder="Repetitions" onkeydown="return event.key != 'Enter';">
+        <form id="new_ex" action="/posts/store" method="post">
+            <input type="date" id="date" name="date" onclick="chooseDate()">
+            <label for="date"></label>
+            <input type="text" id="exercise" name="exercise" placeholder="Exercise/Cardio">
+            <label for="exercise"></label>
+            <input type="text" id="weight" name="weight" placeholder="Weight/Time">
+            <label for="weight"></label>
+            <input type="text" id="sets" name="sets" placeholder="Sets">
+            <label for="sets"></label>
+            <input type="text" id="reps" name="reps" placeholder="Repetitions">
+            <label for="reps"></label>
             <br>
             <br>
-            <button class="btn btn-secondary" onclick="pullData()">Post</button>
+            <button type="submit" class="btn btn-secondary">Post</button>
         </form>
         <br>
         <br>

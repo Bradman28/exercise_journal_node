@@ -9,27 +9,33 @@ details at the various prompts, these inputs will then be stored in local storag
 
 // the pullData function takes user input data on new_entry.html and saves to local storage 
 // this function is called when the user clicks the Post button
-function pullData () {
-    ls_date = document.getElementById("date").value;
-    ls_exercise = document.getElementById("exercise").value;
-    ls_weight = document.getElementById("weight").value;
-    ls_sets = document.getElementById("sets").value;
-    ls_reps = document.getElementById("reps").value;
-
-    let exerciseData = {
-        date: ls_date,
-        exercise: ls_exercise,
-        weight: ls_weight,
-        sets: ls_sets,
-        reps: ls_reps
-    };
-
-    //get existing entries, convert to object, push to exerciseData variable, set to local storage as string
-    let exerciseDataList = JSON.parse(localStorage.getItem("exerciseDataList")) || [];
-    exerciseDataList.push(exerciseData);
-    localStorage.setItem("exerciseDataList", JSON.stringify(exerciseDataList));
-    alert("Your entry has posted to your Journal!")
-}
+// function pullData () {
+//     let date = document.getElementById("date").value;
+//     let exercise = document.getElementById("exercise").value;
+//     let weight = document.getElementById("weight").value;
+//     let sets = document.getElementById("sets").value;
+//     let reps = document.getElementById("reps").value;
+//
+//     const exerciseData = {
+//         date: date,
+//         exercise: exercise,
+//         weight: weight,
+//         sets: sets,
+//         reps: reps
+//     };
+//
+//     //get existing entries, convert to object, push to exerciseData variable, set to local storage as string
+//     fetch('/new_entry', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify(exerciseData)
+//     })
+//         .then(response => {
+//             if(response.ok) {}
+//         })
+// }
 
 // the chooseDate function is from bootstrap and displays the date choosen from the embedded calendar icon
 function chooseDate () {
