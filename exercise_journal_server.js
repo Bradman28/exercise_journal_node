@@ -15,6 +15,13 @@ mongoose.connection.on('error', err => {
     console.error('MongoDB connection error', err)
 });
 
+// test tb connection
+// const db = mongoose.connection;
+// db.on('error', console.error.bind(console,'Mongodb connection error:'));
+// db.once('open', () => {
+//     console.log('connected to mongodb');
+// })
+
 // static files
 app.use(express.static('public'));
 app.use(bodyParser.json());
@@ -37,28 +44,51 @@ app.get('/new_entry', (req, res)=> {
     res.render('new_entry')
 });
 
-const new_entry = require('./models/new_journal_entries.js')
-// handle form submission for user input
-app.post('/posts/store', (req, res) => {
-    new_entry.create(req.body)
-        .then(entry => {
-            res.redirect('/journal');
-        })
-        .catch(error => {
-            console.error(error);
-            res.status(500).send('Internal server error');
-        })
-    console.log(req.body);
-});
-
-app.get('/journal', (req, res)=> {
-    res.render('journal')
-});
+// app.get('/journal', (req, res)=> {
+//     res.render('journal')
+// });
 
 app.get('/archive', (req, res)=> {
     res.render('archive')
 });
 
-// app.use((req, res) => {
-//     res.status(404).render('404')
-// });
+const new_entry = require('./models/new_journal_entries.js')
+// handle form submission for user input
+app.post('/posts/store', async (req, res) => {
+    try {
+        // const date = new Date(req.body.date);
+        // req.body.date = date.toDateString();
+
+        await new_entry.create(req.body)
+        res.redirect('/journal');
+    }
+    catch(error) {
+        console.error(error);
+        res.status(500).send('Internal server error');
+    }
+});
+
+app.get('/journal', async (req, res)=> {
+    try {
+        const all_entries = await new_entry.find({}).exec();
+        // const heatmap = generate_heatmap(all_entries);
+        console.log('All entries', all_entries);
+        res.render('journal', {all_entries: all_entries});
+
+    } catch (error) {
+        console.error('Error retrieving entries:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+app.get('/journal/filter', async (req, res) => {
+    try {
+        const start_date = req.query.start_date;
+        const end_date = req.query.end_date;
+        const filtered_entries = await new_entry.find({date: {$gte: start_date, $lte: end_date}});
+        res.render('journal', {all_entries: filtered_entries});
+    } catch (error) {
+        console.error('Error retrieving filtered entries:', error);
+        res.status(500).send('Internal Server Error');
+    }
+})

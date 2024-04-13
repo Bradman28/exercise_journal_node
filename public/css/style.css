@@ -3,7 +3,7 @@
 }
 
 .bg-image {
-    background-image: url(/public/images/weights.jpeg);
+    background-image: url(../images/weights.jpeg);
     background-size: cover;
     background-position: center;
     height: 500px;

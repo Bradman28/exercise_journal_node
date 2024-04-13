@@ -8,15 +8,25 @@
     <script src="../js/app.js"></script>
     <title>Exercise Journal</title>
 </head>
-<body onload="postData()">
+<body>
     <div class="container-fluid bg-light">
         <!--Navigation -->
         <%- include('layouts/navbar.ejs') -%>
         <h1>Journal</h1><hr><br>
-        <h5>You can see your progress below. Keep up the great work!</h5>
+        <h5>You can see your journal entries posted below.</h5>
         <br>
         <br>
+        <h6>Use our filter to track previous months so you can see all the great progress you've made!</h6>
+        <form id="filter" action="/journal/filter" method="get">
+            <label for="start_date">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" required>
 
+            <label for="end_date">End Date:</label>
+            <input type="date" id="end_date" name="end_date" required>
+
+            <button type="submit" class=" btn btn-primary">Filter</button>
+        </form>
+        <br>
         <table class="table table-hover" id="saved_ex">
             <thead class="table-primary">
                 <tr>
@@ -25,15 +35,28 @@
                     <th>Weight/ Time</th>
                     <th>Sets</th>
                     <th>Repetitions</th>
-                    <th>Archive</th>
-                    <th>Remove</th>
+<!--                    <th>Archive</th>-->
+<!--                    <th>Remove</th>-->
                 </tr>
             </thead>
             <tbody>
-                
+                <% all_entries.forEach(entry => { %>
+                    <tr>
+                        <td><%= entry.date %></td>
+                        <td><%= entry.exercise %></td>
+                        <td><%= entry.weight %></td>
+                        <td><%= entry.sets %></td>
+                        <td><%= entry.reps %></td>
+                        <td>Archive Button</td>
+                        <td>Remove Button</td>
+                    </tr>
+                <% }) %>
             </tbody>
         </table>
-        <button type="submit" class="btn btn-warning btn-sm" onclick="archiveAll()">Archive All</button>
+<!--        <div id="heatmap"></div>-->
+<!--        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>-->
+
+        <button type="submit" class="btn btn-warning btn-sm">Archive</button>
         <br>
         <br>
         <br>
