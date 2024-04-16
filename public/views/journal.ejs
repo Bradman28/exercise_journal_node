@@ -31,24 +31,29 @@
             <thead class="table-primary">
                 <tr>
                     <th>Date</th>
-                    <th>Exercise/Cardio</th>
+                    <th>Body Part</th>
+                    <th>Exercise</th>
                     <th>Weight/ Time</th>
                     <th>Sets</th>
                     <th>Repetitions</th>
-<!--                    <th>Archive</th>-->
-<!--                    <th>Remove</th>-->
+                    <th>Remove Post</th>
                 </tr>
             </thead>
             <tbody>
                 <% all_entries.forEach(entry => { %>
                     <tr>
                         <td><%= entry.date %></td>
+                        <td><%= entry.body_part %></td>
                         <td><%= entry.exercise %></td>
                         <td><%= entry.weight %></td>
                         <td><%= entry.sets %></td>
                         <td><%= entry.reps %></td>
-                        <td>Archive Button</td>
-                        <td>Remove Button</td>
+                        <td>
+                            <form id="remove" action="/posts/remove" method="post">
+                                <input type="hidden" name="id" value="<%= entry.id %>">
+                                <button type="submit" class="btn btn-warning btn-sm">Remove</button>
+                            </form>
+                        </td>
                     </tr>
                 <% }) %>
             </tbody>
@@ -56,14 +61,13 @@
 <!--        <div id="heatmap"></div>-->
 <!--        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>-->
 
-        <button type="submit" class="btn btn-warning btn-sm">Archive</button>
+<!--        <button type="submit" class="btn btn-warning btn-sm">Archive</button>-->
         <br>
         <br>
         <br>
         <br>
-        <footer>
-            Copyright &copy; 2024 Exercise Journal <a href="mailto:bsurin13@stu.jjc.edu">bsurin13@stu.jjc.edu</a>
-        </footer>
+        <!--Footer -->
+        <%- include('layouts/footer.ejs') -%>
     </div>
 </body>
 </html>

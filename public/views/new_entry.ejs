@@ -20,9 +20,18 @@
         <br>
 
         <form id="new_ex" action="/posts/store" method="post">
-            <input type="date" id="date" name="date" onclick="chooseDate()">
+            <input type="date" id="date" name="date">
             <label for="date"></label>
-            <input type="text" id="exercise" name="exercise" placeholder="Exercise/Cardio">
+            <select id="body_part" name="body_part">
+                <option value="Chest">Chest</option>
+                <option value="Back">Back</option>
+                <option value="Shoulders">Shoulders</option>
+                <option value="Legs">Legs</option>
+                <option value="Arms">Arms</option>
+                <option value="Cardio">Cardio</option>
+            </select>
+            <label for="body_part"></label>
+            <input type="text" id="exercise" name="exercise" placeholder="Exercise">
             <label for="exercise"></label>
             <input type="text" id="weight" name="weight" placeholder="Weight/Time">
             <label for="weight"></label>
@@ -38,9 +47,8 @@
         <br>
         <br>
         <br>
-        <footer>
-            Copyright &copy; 2024 Exercise Journal <a href="mailto:bsurin13@stu.jjc.edu">bsurin13@stu.jjc.edu</a>
-        </footer>
+        <!--Footer -->
+        <%- include('layouts/footer.ejs') -%>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
 </body>

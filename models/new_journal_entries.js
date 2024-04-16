@@ -7,6 +7,7 @@ const Schema = mongoose.Schema;
 
 const exercise_entry_schema = new Schema({
     date: {type: Date, required: true},
+    body_part: {type: String, required: true},
     exercise: {type: String, required: true},
     weight: {type: String},
     sets: {type: String},

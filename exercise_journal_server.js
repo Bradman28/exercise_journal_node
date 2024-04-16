@@ -8,6 +8,7 @@ const app = new express();
 const path = require('path');
 const ejs = require('ejs');
 const mongoose = require('mongoose');
+const dayjs = require('dayjs');
 
 // connect to mongodb and error handler
 mongoose.connect('mongodb://localhost/exercise_entries');
@@ -48,16 +49,16 @@ app.get('/new_entry', (req, res)=> {
 //     res.render('journal')
 // });
 
-app.get('/archive', (req, res)=> {
-    res.render('archive')
-});
+// app.get('/archive', (req, res)=> {
+//     res.render('archive')
+// });
 
 const new_entry = require('./models/new_journal_entries.js')
 // handle form submission for user input
 app.post('/posts/store', async (req, res) => {
     try {
-        // const date = new Date(req.body.date);
-        // req.body.date = date.toDateString();
+
+        req.body.date = dayjs(req.body.date).format('ddd MM DD YYYY');
 
         await new_entry.create(req.body)
         res.redirect('/journal');
@@ -70,10 +71,12 @@ app.post('/posts/store', async (req, res) => {
 
 app.get('/journal', async (req, res)=> {
     try {
+        // const all_entries = await new_entry.find({}).exec();
+
+
         const all_entries = await new_entry.find({}).exec();
-        // const heatmap = generate_heatmap(all_entries);
-        console.log('All entries', all_entries);
-        res.render('journal', {all_entries: all_entries});
+
+        res.render('journal', { all_entries: all_entries });
 
     } catch (error) {
         console.error('Error retrieving entries:', error);
@@ -85,10 +88,43 @@ app.get('/journal/filter', async (req, res) => {
     try {
         const start_date = req.query.start_date;
         const end_date = req.query.end_date;
-        const filtered_entries = await new_entry.find({date: {$gte: start_date, $lte: end_date}});
+        const filtered_entries = await new_entry.find(
+            {date: {$gte: start_date, $lte: end_date}});
+
+        // const formatted_entries = filtered_entries.map(entry => {
+        //     return {
+        //         ...entry.toObject(),
+        //         date: dayjs(entry.date, 'MM-DD-YYYY').format('ddd MMM DD YYYY')
+        //     };
+        // });
+
+        // res.render('journal', {all_entries: formatted_entries});
         res.render('journal', {all_entries: filtered_entries});
     } catch (error) {
         console.error('Error retrieving filtered entries:', error);
         res.status(500).send('Internal Server Error');
     }
 })
+
+app.post('/posts/remove', async (req, res) => {
+    try {
+        const entry_id = req.body.id;
+        console.log('Entry ID:', entry_id);
+
+        // Check if entry ID is empty
+        if (!entry_id) {
+            return res.status(400).send('Entry ID is missing');
+        }
+
+        const removed_entry = await new_entry.deleteOne({_id: entry_id});
+        if (!removed_entry) {
+            return res.status(404).send('Entry not found');
+        }
+        console.log('removed entry: ', removed_entry)
+        res.redirect('/journal');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal server error');
+    }
+})
+
