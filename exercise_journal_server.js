@@ -61,7 +61,7 @@ app.post('/posts/store', async (req, res) => {
         req.body.date = dayjs(req.body.date).format('ddd MM DD YYYY');
 
         await new_entry.create(req.body)
-        res.redirect('/journal');
+        // res.redirect('/journal');
     }
     catch(error) {
         console.error(error);
@@ -69,14 +69,28 @@ app.post('/posts/store', async (req, res) => {
     }
 });
 
+const items_per_page = 10;
 app.get('/journal', async (req, res)=> {
     try {
-        // const all_entries = await new_entry.find({}).exec();
 
+        const page = parseInt(req.query.page) || 1;
 
-        const all_entries = await new_entry.find({}).exec();
+        const skip = (page - 1) * items_per_page;
+        const total_entries = await new_entry.countDocuments();
 
-        res.render('journal', { all_entries: all_entries });
+        const all_entries = await new_entry.find({})
+            .sort({date: -1})
+            .skip(skip)
+            .limit(items_per_page)
+            .exec();
+
+        const has_next_page = (page * items_per_page) < total_entries;
+
+        res.render('journal', {
+            all_entries: all_entries,
+            page: page,
+            has_next_page: has_next_page
+        });
 
     } catch (error) {
         console.error('Error retrieving entries:', error);
@@ -88,18 +102,27 @@ app.get('/journal/filter', async (req, res) => {
     try {
         const start_date = req.query.start_date;
         const end_date = req.query.end_date;
+        const page = parseInt(req.query.page) || 1;
+        const skip = (page - 1) * items_per_page;
+
         const filtered_entries = await new_entry.find(
-            {date: {$gte: start_date, $lte: end_date}});
+            {date: {$gte: start_date, $lte: end_date}})
+            .sort({date: -1})
+            .skip(skip)
+            .limit(items_per_page)
+            .exec();
 
-        // const formatted_entries = filtered_entries.map(entry => {
-        //     return {
-        //         ...entry.toObject(),
-        //         date: dayjs(entry.date, 'MM-DD-YYYY').format('ddd MMM DD YYYY')
-        //     };
-        // });
+        const total_filtered_entries = await new_entry.countDocuments({
+            date: { $gte: start_date, $lte: end_date }
+        });
 
-        // res.render('journal', {all_entries: formatted_entries});
-        res.render('journal', {all_entries: filtered_entries});
+        const has_next_page = (page * items_per_page) < total_filtered_entries;
+
+        res.render('journal', {
+            all_entries: filtered_entries,
+            page: page,
+            has_next_page: has_next_page
+        });
     } catch (error) {
         console.error('Error retrieving filtered entries:', error);
         res.status(500).send('Internal Server Error');

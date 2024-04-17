@@ -13,6 +13,15 @@ ul {
     list-style-type: none;
 }
 
+#body_part {
+    height: 28px;
+    width: 125px;
+}
+
+.description {
+    width: auto;
+}
+
 .box-fade {
     display: flex;
     justify-content: space-between;
