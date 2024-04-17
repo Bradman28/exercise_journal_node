@@ -29,7 +29,7 @@
             <label for="end_date">End Date:</label>
             <input type="date" id="end_date" name="end_date" required>
 
-            <button type="submit" class=" btn btn-info btn-sm">Filter Entries</button>
+            <button type="submit" class=" btn btn-primary btn-sm">Filter Entries</button>
         </form>
 
         <br>
@@ -67,9 +67,14 @@
             </tbody>
         </table>
 
-        <div class="d-flex justify-content-between" style="margin-left: 100px; margin-right: 100px">
-            <button class="btn btn-info btn-sm" <% if (page > 1) { %> onclick="location.href='/journal?page=<%= page - 1 %>'" <% } %>><< Previous</button>
-            <button class="btn btn-info btn-sm" <% if (has_next_page) { %> onclick="location.href='/journal?page=<%= page + 1 %>'" <% } %>>Next >></button>
+<!--        Pagination-->
+        <div class="d-flex justify-content-between" style="margin-left: 670px; margin-right: 750px">
+            <button class="btn btn-info btn-sm" <% if (page > 1)
+                { %> onclick="location.href='/journal?page=<%= page - 1 %>'" <% } %>><< Previous
+            </button>
+            <button class="btn btn-info btn-sm" <% if (has_next_page)
+                { %> onclick="location.href='/journal?page=<%= page + 1 %>'" <% } %>>Next >>
+            </button>
         </div>
 
         <br>

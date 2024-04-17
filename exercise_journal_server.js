@@ -2,6 +2,7 @@
 // Exercise Journal
 // exercise_journal_server
 
+// imports for building app, handling routes, parsing request bodies, rendering views, mongoDB, and dates
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = new express();
@@ -16,19 +17,13 @@ mongoose.connection.on('error', err => {
     console.error('MongoDB connection error', err)
 });
 
-// test tb connection
-// const db = mongoose.connection;
-// db.on('error', console.error.bind(console,'Mongodb connection error:'));
-// db.once('open', () => {
-//     console.log('connected to mongodb');
-// })
 
-// static files
+// express to serve static files and middleware parsers for JSON/ incoming URL requests
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
-// register view engine and set up middleware
+// register view engine for express to ejs, and where ejs files are located
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, './public/views'));
 
@@ -45,23 +40,19 @@ app.get('/new_entry', (req, res)=> {
     res.render('new_entry')
 });
 
-// app.get('/journal', (req, res)=> {
-//     res.render('journal')
-// });
-
-// app.get('/archive', (req, res)=> {
-//     res.render('archive')
-// });
-
+// module to interact with database, defining mongoose model for new journal entries
 const new_entry = require('./models/new_journal_entries.js')
+
 // handle form submission for user input
 app.post('/posts/store', async (req, res) => {
     try {
 
         req.body.date = dayjs(req.body.date).format('ddd MM DD YYYY');
 
-        await new_entry.create(req.body)
-        // res.redirect('/journal');
+        // creates new entry in the database
+        await new_entry.create(req.body);
+
+        res.redirect('/journal');
     }
     catch(error) {
         console.error(error);
@@ -69,21 +60,25 @@ app.post('/posts/store', async (req, res) => {
     }
 });
 
+// define items per page as 10
 const items_per_page = 10;
 app.get('/journal', async (req, res)=> {
     try {
-
+        // extract page query, defaults to 1, skip used to paginate results
         const page = parseInt(req.query.page) || 1;
-
         const skip = (page - 1) * items_per_page;
+
+        // retrieves total number of entries in database
         const total_entries = await new_entry.countDocuments();
 
+        //mongoDB query to fetch entries from database, sort by descending order, skips based on current page
         const all_entries = await new_entry.find({})
             .sort({date: -1})
             .skip(skip)
             .limit(items_per_page)
             .exec();
 
+        // calculate whether there are more pages of entries beyond current page
         const has_next_page = (page * items_per_page) < total_entries;
 
         res.render('journal', {
@@ -105,6 +100,7 @@ app.get('/journal/filter', async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const skip = (page - 1) * items_per_page;
 
+        // stores total number of entries that match specified range
         const filtered_entries = await new_entry.find(
             {date: {$gte: start_date, $lte: end_date}})
             .sort({date: -1})
@@ -112,6 +108,7 @@ app.get('/journal/filter', async (req, res) => {
             .limit(items_per_page)
             .exec();
 
+        // stores total number of journal entries for pagination
         const total_filtered_entries = await new_entry.countDocuments({
             date: { $gte: start_date, $lte: end_date }
         });
